@@ -3,6 +3,7 @@ require "singleton"
 require "mongoid"
 require "mongoid/config"
 require "mongoid/railties/document"
+require "mongoid/railties/controller_runtime"
 require "rails"
 require "rails/mongoid"
 
@@ -90,6 +91,13 @@ module Rails #:nodoc:
           else
             ActionDispatch::ShowExceptions.rescue_responses.update(responses)
           end
+        end
+      end
+
+      # Expose database runtime to controller for logging.
+      initializer "log runtime" do |app|
+        ActiveSupport.on_load(:action_controller) do
+          include ::Mongoid::ControllerRuntime
         end
       end
 
